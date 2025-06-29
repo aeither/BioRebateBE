@@ -1,4 +1,3 @@
-// server.ts
 import { Hono } from 'hono';
 import Stripe from 'stripe';
 import { cors } from 'hono/cors';
@@ -27,7 +26,7 @@ app.post('/create-checkout-session', async (c) => {
             name: item.name,
             images: [item.image]
           },
-          unit_amount: item.price * 100,
+          unit_amount: Math.round(item.price * 100), // Critical fix: Ensure integer
         },
         quantity: item.quantity,
       })),
@@ -37,15 +36,15 @@ app.post('/create-checkout-session', async (c) => {
       automatic_tax: { enabled: true },
       shipping_address_collection: {
         allowed_countries: ['FR', 'MC']
-      }
+      },
+      expires_at: Math.floor(Date.now() / 1000) + 30 * 60, // 30-minute expiry
     });
 
-    return c.json({ sessionId: session.id });
+    return c.json({ sessionId: session.id, checkoutUrl: session.url });
   } catch (err: any) {
     console.error('Stripe error:', err);
     return c.json({ error: err.message }, 500);
   }
 });
 
-// Cloudflare Workers export
 export default app;
