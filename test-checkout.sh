@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Test curl command for Stripe checkout session
-curl -X POST http://localhost:8787/create-checkout-session \
+curl -X POST https://biorebatebe.fulin.workers.dev/create-checkout-session \
   -H "Content-Type: application/json" \
   -d '{
     "items": [
@@ -17,5 +17,7 @@ curl -X POST http://localhost:8787/create-checkout-session \
         "price": 45.50,
         "quantity": 1
       }
-    ]
+    ],
+    "success_url": "https://yourdomain.com/success",
+    "cancel_url": "https://yourdomain.com/cancel"
   }' 
