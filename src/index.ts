@@ -1,12 +1,15 @@
 // server.ts
 import { Hono } from 'hono';
 import Stripe from 'stripe';
+import { cors } from 'hono/cors';
 
 interface Env {
   STRIPE_SECRET_KEY: string;
 }
 
 const app = new Hono<{ Bindings: Env }>();
+
+app.use('*', cors());
 
 app.post('/create-checkout-session', async (c) => {
   const STRIPE_SECRET_KEY = c.env.STRIPE_SECRET_KEY;
